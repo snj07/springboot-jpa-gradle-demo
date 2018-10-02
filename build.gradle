@@ -57,12 +57,16 @@ dependencies {
 
     implementation "org.springframework.boot:spring-boot-starter-web:${project.bootVersion}"
     implementation "org.springframework.boot:spring-boot-starter-data-jpa:${project.bootVersion}"
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version: project.bootVersion
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: project.bootVersion
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: project.bootVersion
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: project.bootVersion
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: project.bootVersion
     //providedRuntime "org.springframework.boot:spring-boot-starter-tomcat:${project.bootVersion}"
 
     //swagger
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
-
 
     //datasource hibernate dependency
     implementation 'commons-dbcp:commons-dbcp:1.4'
