@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 public class Employee {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType   .AUTO)
     @ApiModelProperty(notes = "The database generated id for employee")
     private long id;
     @ApiModelProperty(notes = "The first name of employee")
