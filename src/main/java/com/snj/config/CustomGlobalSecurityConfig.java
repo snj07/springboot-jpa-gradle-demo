@@ -5,6 +5,7 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.oauth2.provider.expression.OAuth2MethodSecurityExpressionHandler;
+
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class CustomGlobalSecurityConfig extends GlobalMethodSecurityConfiguration {

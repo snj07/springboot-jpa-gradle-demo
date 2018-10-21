@@ -15,16 +15,12 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.*;
-import sun.misc.IOUtils;
 
-
-import java.io.*;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 @Configuration
@@ -32,6 +28,7 @@ import java.util.Arrays;
 public class CustomResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+
     @Override
     public void configure(final HttpSecurity http) throws Exception {
 //        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
