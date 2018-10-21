@@ -1,4 +1,4 @@
-package com.snj;
+package com.snj.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +23,7 @@ import static org.hibernate.validator.internal.util.CollectionHelper.newArrayLis
 
 @Configuration
 @EnableSwagger2
-@ComponentScan(basePackages = "com.authentication.api")
+@ComponentScan(basePackages = "com.snj")
 public class SwaggerConfig {
 
     @Value("${config.oauth2.clientID}")
@@ -58,15 +58,42 @@ public class SwaggerConfig {
 
     }
 
-    @Bean
-    public SecurityScheme apiKey() {
-        return new ApiKey(HttpHeaders.AUTHORIZATION, "apiKey", "header");
-    }
+//    @Bean
+//    public SecurityScheme apiKey() {
+//        return new ApiKey(HttpHeaders.AUTHORIZATION, "apiKey", "header");
+//    }
 
     @Bean
     public SecurityScheme apiCookieKey() {
         return new ApiKey(HttpHeaders.COOKIE, "apiKey", "cookie");
     }
+
+
+    @Bean
+    public SecurityConfiguration security() {
+        return SecurityConfigurationBuilder.builder()
+                .clientId(CLIENT_ID)
+                .clientSecret(CLIENT_SECRET)
+                .appName(null)// appName Needed for authenticate button to work
+                .realm(null)// realm Needed for authenticate button to work
+                .scopeSeparator("")
+                .useBasicAuthenticationWithAccessCodeGrant(true)
+                .build();
+    }
+
+//    @Bean
+//    public SecurityConfiguration security() {
+//        return new SecurityConfiguration
+//                ("client", "secret", "", "", "Bearer access token", ApiKeyVehicle.HEADER, HttpHeaders.AUTHORIZATION, "");
+//    }
+//
+
+    @Bean
+    public ApiKey apiKey() {
+        return new ApiKey("JWT", "Authorization", "header");
+    }
+
+
 
     private OAuth securitySchema() {
 
@@ -95,12 +122,6 @@ public class SwaggerConfig {
         authorizationScopes[2] = new AuthorizationScope("write", "write all");
 
         return Collections.singletonList(new SecurityReference("oauth2", authorizationScopes));
-    }
-
-    @Bean
-    public SecurityConfiguration security() {
-        return new SecurityConfiguration
-                ("client", "secret", "", "", "Bearer access token", ApiKeyVehicle.HEADER, HttpHeaders.AUTHORIZATION, "");
     }
 
 

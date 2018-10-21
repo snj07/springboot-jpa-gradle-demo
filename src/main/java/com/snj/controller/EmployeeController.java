@@ -8,10 +8,15 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/employee")
@@ -21,7 +26,33 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
+    @Autowired
+    private TokenStore tokenStore;
+    @Value("${config.oauth2.resource.jwt.key-pair.store-password}")
+    private String keyStorePass;
 
+    @Value("${config.oauth2.resource.jwt.key-pair.alias}")
+    private String keyPairAlias;
+
+
+/*
+    @Bean
+    public JwtAccessTokenConverter accessTokenConverter() {
+
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        KeyStoreKeyFactory keyStoreKeyFactory =
+                new KeyStoreKeyFactory(new ClassPathResource("public.key"), keyStorePass.toCharArray());
+        converter.setKeyPair(keyStoreKeyFactory.getKeyPair(keyPairAlias));
+        return converter;
+    }
+
+    @Bean
+    public JwtTokenStore tokenStore() {
+        return new JwtTokenStore(accessTokenConverter());
+    }
+*/
+
+    @PreAuthorize("#oauth2.hasScope('write')")
     @ApiOperation(value = "Add a employee data")
     @RequestMapping(method = RequestMethod.POST, headers = "Accept=application/json")
     public Employee createEmployee(@RequestBody Employee employee) {
@@ -36,9 +67,20 @@ public class EmployeeController {
             @ApiResponse(code = 404, message = "The resource is not found")
     }
     )
+    @PreAuthorize("#oauth2.hasScope('read')")
     @RequestMapping(method = RequestMethod.GET, headers = "Accept=application/json")
     public Iterable<Employee> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
+
+    @PreAuthorize("#oauth2.hasScope('read')")
+    @RequestMapping(method = RequestMethod.GET, value = "/users/extra")
+    @ResponseBody
+    public Map<String, Object> getExtraInfo(OAuth2Authentication auth) {
+        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();
+        final OAuth2AccessToken accessToken = tokenStore.readAccessToken(details.getTokenValue());
+        System.out.println(accessToken);
+        return accessToken.getAdditionalInformation();
+    }
 }
